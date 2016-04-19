@@ -1,0 +1,18 @@
+{
+  "name": "wearwhat",
+  "description": "An angular app that helps you decide what to wear every day.",
+  "main": "index.js",
+  "authors": [
+    "Thomas Kukla"
+  ],
+  "license": "ISC",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
