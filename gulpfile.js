@@ -11,7 +11,8 @@ var gulp = require('gulp'),
     concat = require('gulp-concat'),
     rename = require('gulp-rename'),
     inject = require('gulp-inject'),
-    es = require('event-stream');
+    es = require('event-stream'),
+    series = require('stream-series');
 
 //Convert SASS files and store them in .tmp
 gulp.task('sass', function(){
@@ -51,27 +52,26 @@ gulp.task('js', function(){
 //Compiles and inserts bower files and pushes index.html to .tmp
 gulp.task('main:libs', ['bower:css', 'bower:js'], function(){
 
-  var js = gulp.src('.tmp/scripts/**/*.js', {read: false});
+  //Filter to get jusy lib.js
+  var libfilter = filter('.tmp/scripts/lib/*');
+
+  //Store lib.js in jslib var
+  var jslib = gulp
+            .src('.tmp/scripts/**/*.js', {read: false})
+            .pipe(libfilter);
+
+  //Store other sources
+  var js = gulp.src(['.tmp/scripts/**/*.js', '!.tmp/scripts/lib/*'], {read: false});
   var csslib = gulp.src('.tmp/styles/lib/*.css', {read: false});
   var css = gulp.src('.tmp/styles/*.css', {read: false});
 
-  return gulp
-          .src('app/index.html')
-          .pipe(inject(es.merge(js, csslib, css), {ignorePath: '.tmp'}))
-          .pipe(gulp.dest('./.tmp/'))
-          .pipe(browserSync.stream());
-});
-
-//Inserts files to index.html and pushed to .tmp without recompling bower files.
-gulp.task('main', function(){
-
-  var js = gulp.src('.tmp/scripts/**/*.js', {read: false});
-  //var csslib = gulp.src('.tmp/styles/lib/*.css', {read: false});
-  var css = gulp.src('.tmp/styles/*.css', {read: false});
+  //Merge streams
+  var allLibs = es.merge(jslib, csslib);
+  var allApp = es.merge(js, css);
 
   return gulp
           .src('app/index.html')
-          .pipe(inject(es.merge(js, css), {ignorePath: '.tmp'}))
+          .pipe(inject(series(allLibs, allApp), {ignorePath: '.tmp'}))
           .pipe(gulp.dest('./.tmp/'))
           .pipe(browserSync.stream());
 });
@@ -79,7 +79,7 @@ gulp.task('main', function(){
 //Compile bower CSS files into lib.css file and insert into .tmp/styles
 gulp.task('bower:css', function(){
 
-  var cssFilter = filter('**/*.css', {restore: true});
+  var cssFilter = filter('**/*.css');
 
   return gulp
           .src(mainBowerFiles())
@@ -92,7 +92,7 @@ gulp.task('bower:css', function(){
 //Bower js files consolidation and insert into scripts/lib
 gulp.task('bower:js', function() {
 
-  var jsFilter = filter('**/*.js', {restore: true});
+  var jsFilter = filter('**/*.js');
 
   return gulp
           .src(mainBowerFiles())
