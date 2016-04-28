@@ -49,6 +49,13 @@ gulp.task('js', function(){
           .pipe(gulp.dest('.tmp/scripts'));
 });
 
+//Push images to .tmp
+gulp.task('img', function(){
+  return gulp
+          .src('app/img/**')
+          .pipe(gulp.dest('.tmp/img/'));
+});
+
 //Compiles and inserts bower files and pushes index.html to .tmp
 gulp.task('main:libs', ['bower:css', 'bower:js'], function(){
 
@@ -104,7 +111,7 @@ gulp.task('bower:js', function() {
 
 //Build .tmp folder
 gulp.task('build:tmp', ['clean:tmp'], function() {
-  runSequence(['html', 'sass', 'js'], 'main:libs');
+  runSequence(['html', 'sass', 'js', 'img'], 'main:libs');
 });
 
 //Watch all files for changes and reload browserSync on changes
@@ -117,6 +124,7 @@ gulp.task('watch', ['build:tmp'],function(){
   });
   gulp.watch('app/views/**/*.html', ['html']).on('change', browserSync.reload);
   gulp.watch('app/scripts/**/*.js', ['js']).on('change', browserSync.reload);
+  gulp.watch('app/img/**', ['img']).on('change', browserSync.reload);
   gulp.watch(['bower.json', 'app/index.html'], ['main:libs']);
 });
 

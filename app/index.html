@@ -1,19 +1,87 @@
 <!DOCTYPE html>
-<html ng-app="wearWhat">
+<html>
   <head>
     <meta charset="utf-8">
-    <title>Title</title>
+    <title>Your Weather</title>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,700' rel='stylesheet' type='text/css'>
     <!-- inject:css -->
     <!-- endinject -->
   </head>
-  <body>
-    <h1 class="text-center">This is a test!</h1>
-    <p class="text-center">
-      This is a bunch of paragraph text!
-    </p>
-    <p class="dog text-center">
-      THIS IS A DOG TEST!
-    </p>
+  <body ng-controller="weatherCont" ng-app="wearWhat">
+    <div class="cityInput text-center container"  ng-hide="weather != null">
+      <h1>Where do you live?</h1>
+      <div class="row">
+        <input class="form-control col-sm-4 text-center" type="text" name="city" ng-model="city" autocomplete="off" placeholder="Enter City Name">
+        <button class="btn" type="button" id="subCity" name="subCity" ng-click="update(city)"> Enter City </button>
+      </div>
+    </div>
+
+    <div class="display container-full" ng-hide="weather == null">
+
+      <!-- Left Display Column -->
+      <div id="leftDisplay">
+        <div class="row text-center" id="city">
+          <h1>{{inputCity}}</h1>
+        </div>
+        <div class="row text-center" id="tempDiv">
+          <h1 id="temp">{{temp}}<span ng-hide="temp == null">°</span></h1>
+        </div>
+        <div class="row text-center" id="bottombar">
+          <span class="bottomchild" data-toggle="tooltip" data-placement="bottom" title="Humidity"><img src="./img/humidity.png" alt="humidity" height="30" width="30">{{humidity}}%</span> |
+          <span class="bottomchild" data-toggle="tooltip" data-placement="bottom" title="Conditions"><img ng-src="./img/{{weatherIcon}}" alt="conditions" height="40" width="40">{{weather}}</span> |
+          <span class="bottomchild" data-toggle="tooltip" data-placement="bottom" title="Wind MPH"> <img src="./img/gust.png" alt="wind" height="40" width="40"> {{wind}} mph </span>
+        </div>
+      </div>
+
+      <!-- Center display column -->
+      <div id="centerDisplay">
+        <img class="" ng-src="./img/char/{{charIcon}}" alt="" />
+      </div>
+
+      <!-- Right Display -->
+      <div id="rightDisplay">
+        <div class="row text-center" id="rdbg">
+          <h1>Checklist</h1>
+          <div class="checkboxGroup">
+
+            <div class="checkerbox row">
+              <div class="checker" name="checkerDiv">
+                <input type="checkbox" value="None" id="checkbox" name="check" />
+                <label for="checkbox"></label>
+              </div>
+              <div class="checkerDivLabel" for="checkerDiv">Car Keys</div>
+            </div>
+
+            <div class="checkerbox row">
+              <div class="checker" name="checkerDiv">
+                <input type="checkbox" value="None" id="checkbox1" name="check" />
+                <label for="checkbox1"></label>
+              </div>
+              <div class="checkerDivLabel" for="checkerDiv">Wallet</div>
+            </div>
+
+            <div class="checkerbox row">
+              <div class="checker" name="checkerDiv">
+                <input type="checkbox" value="None" id="checkbox2" name="check" />
+                <label for="checkbox2"></label>
+              </div>
+              <div class="checkerDivLabel" for="checkerDiv">Money</div>
+            </div>
+
+            <div class="checkerbox row">
+              <div class="checker" name="checkerDiv">
+                <input type="checkbox" value="None" id="checkbox3" name="check" />
+                <label for="checkbox3"></label>
+              </div>
+              <div class="checkerDivLabel" for="checkerDiv">Mints</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+
+    </div>
   </body>
   <!-- inject:js -->
   <!-- endinject -->

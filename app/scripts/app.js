@@ -1,1 +1,1 @@
-angular.module('wearWhat', []);
+angular.module('wearWhat', ['ngResource']);
